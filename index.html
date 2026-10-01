@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPOS B2B - Buyer & Purchase Order Suite (Vanny's Module)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-left">
+        <div class="brand-logo">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">SmartPOS <span class="badge-b2b">B2B Suite</span></span>
+            <span class="brand-subtitle">Buyer & PO Workflow Module &bull; Dev: <strong>Vanny</strong></span>
+          </div>
+        </div>
+
+        <div class="branch-pill">
+          <span class="branch-dot online"></span>
+          <span class="branch-label">Buyer Branch:</span>
+          <strong>Branch #03 - Downtown Central Store</strong>
+          <span class="branch-uuid-tag" title="Branch UUID: b103-7b44-466a-b2b">UUID: b103...466a</span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div class="nav-actions">
+          <button class="btn-ghost" id="btnOpenDbInspector" title="View Database Architecture & Schema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+            <span>Vanny's DB Schema</span>
+          </button>
+          <button class="btn-ghost" id="btnSimulateSupplier" title="Simulate Supplier Response (Quotation / Shipping)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+            <span>Simulate Partner</span>
+          </button>
+          <div class="notification-bell" id="bellBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="notif-badge">3</span>
+          </div>
+          <div class="user-avatar-pill">
+            <div class="avatar">V</div>
+            <div class="avatar-info">
+              <span class="user-name">Vanny (Buyer)</span>
+              <span class="user-role">Purchasing Lead</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="main-layout">
+      <!-- Sidebar / Section Nav -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">VANNY'S CORE TASKS</div>
+          <ul class="sidebar-menu">
+            <li class="active" data-view="dashboard">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              <span>Buyer Dashboard</span>
+            </li>
+            <li data-view="outgoing-po">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              <span>Outgoing POs (B2B)</span>
+              <span class="menu-count" id="countOutgoing">5</span>
+            </li>
+            <li data-view="transactions">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+              <span>B2B Transactions</span>
+              <span class="menu-count" id="countTransactions">4</span>
+            </li>
+            <li data-view="status-history">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>PO Status History</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">COLLABORATION FLOW</div>
+          <ul class="sidebar-menu">
+            <li data-view="quotation-review">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Quotation & Offers</span>
+              <span class="badge-pending">2 New</span>
+            </li>
+            <li data-view="receiving-invoices">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              <span>Receiving & Invoicing</span>
+            </li>
+            <li data-view="incoming-reference">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
+              <span>Incoming Order Flow</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="architecture-status-card">
+            <div class="card-status-title">
+              <span class="status-indicator-dot"></span>
+              <strong>Architecture v2 Ready</strong>
+            </div>
+            <p>1 Transaction = 1 Buyer + 1 Supplier Branch. Non-negotiable clean rules applied.</p>
+            <div class="db-tags">
+              <span class="tag">Same DB</span>
+              <span class="tag">Remote DB</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content View Area -->
+      <main class="content-area" id="contentArea">
+        <!-- Rendered by JavaScript based on active view -->
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- 1. Create B2B Purchase Order Modal -->
+    <div class="modal-overlay" id="modalCreatePO">
+      <div class="modal-container large">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2>Create B2B Purchase Order</h2>
+            <span class="modal-subtitle">Generates linked <code>b2b_transaction</code> and buyer <code>inv_purchase_order</code></span>
+          </div>
+          <button class="btn-close" id="btnCloseCreatePO">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="createPoForm">
+            <!-- Top Step Indicator -->
+            <div class="form-steps">
+              <div class="form-step active" data-step="1">
+                <span class="step-num">1</span>
+                <span class="step-label">Branch & Supplier Identity</span>
+              </div>
+              <div class="form-step" data-step="2">
+                <span class="step-num">2</span>
+                <span class="step-label">Order Items & Quantities</span>
+              </div>
+              <div class="form-step" data-step="3">
+                <span class="step-num">3</span>
+                <span class="step-label">Commercial & Review</span>
+              </div>
+            </div>
+
+            <!-- Step 1 Content -->
+            <div class="step-content active" id="step1">
+              <div class="alert-info-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div>
+                  <strong>B2B Core Rule:</strong> Supplier identity is a <em>branch/business identity</em>, not the legacy <code>inv_supplier</code> record. One B2B transaction has exactly one buyer branch and one supplier branch.
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Buyer Branch (Your Branch) <span class="req">*</span></label>
+                  <select id="poBuyerBranch" class="form-control" disabled>
+                    <option value="3" data-uuid="b103-7b44-466a-b2b" selected>Branch #03 - Downtown Central Store (Local)</option>
+                  </select>
+                  <small class="field-hint">UUID: <code>550e8400-e29b-41d4-a716-446655440000</code></small>
+                </div>
+
+                <div class="form-group">
+                  <label>Supplier Mode & Deployment <span class="req">*</span></label>
+                  <select id="poSupplierMode" class="form-control">
+                    <option value="same_db">Same Database (Internal Central Warehouse / Branch)</option>
+                    <option value="remote_db">Separate Database (Remote B2B Connected Partner)</option>
+                  </select>
+                  <small class="field-hint">Determines if <code>supplier_connection_id</code> is NULL or linked</small>
+                </div>
+
+                <div class="form-group span-2">
+                  <label>Select B2B Supplier Branch <span class="req">*</span></label>
+                  <select id="poSupplierBranch" class="form-control">
+                    <!-- Populated via JS based on mode -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>PO Number <span class="req">*</span></label>
+                  <div class="input-with-action">
+                    <input type="text" id="poNumber" class="form-control" value="PO-2026-00128" required>
+                    <button type="button" class="btn-secondary" id="btnGenPoNum">Auto</button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>PO Date <span class="req">*</span></label>
+                  <input type="datetime-local" id="poDate" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Expected Delivery Date</label>
+                  <input type="date" id="poExpectedDate" class="form-control">
+                </div>
+
+                <div class="form-group">
+                  <label>Internal PO Approval (is_approve)</label>
+                  <select id="poIsApprove" class="form-control">
+                    <option value="1">Approved (is_approve = 1) - Ready to send</option>
+                    <option value="0">Draft / Pending Internal Sign-off (is_approve = 0)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <div></div>
+                <button type="button" class="btn-primary" id="btnGoStep2">Next: Add Items &rarr;</button>
+              </div>
+            </div>
+
+            <!-- Step 2 Content -->
+            <div class="step-content" id="step2">
+              <div class="items-toolbar">
+                <div class="search-item-bar">
+                  <input type="text" id="itemSearchInput" placeholder="Search catalog by SKU, Barcode, or Name..." class="form-control">
+                  <button type="button" class="btn-secondary" id="btnAddQuickItem">+ Quick Add Item</button>
+                </div>
+                <div class="total-preview">
+                  <span>Lines: <strong id="modalLineCount">0</strong></span>
+                  <span>Estimated Total: <strong id="modalTotalPreview">$0.00</strong></span>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="data-table" id="createPoItemsTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">#</th>
+                      <th>Product / Description</th>
+                      <th>Buyer Item ID</th>
+                      <th style="width: 120px;">Requested Qty</th>
+                      <th style="width: 100px;">UOM</th>
+                      <th style="width: 130px;">Target Price ($)</th>
+                      <th style="width: 140px;">Subtotal</th>
+                      <th style="width: 60px;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="createPoItemsBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn-secondary" id="btnBackStep1">&larr; Back to Setup</button>
+                <button type="button" class="btn-primary" id="btnGoStep3">Next: Review & Confirm &rarr;</button>
+              </div>
+            </div>
+
+            <!-- Step 3 Content -->
+            <div class="step-content" id="step3">
+              <div class="review-summary-grid">
+                <div class="summary-box">
+                  <h4>B2B Transaction Summary</h4>
+                  <div class="summary-row"><span>Transaction No:</span> <strong id="revTxNo">Auto (B2B-2026-...)</strong></div>
+                  <div class="summary-row"><span>Buyer Branch:</span> <span>Downtown Central Store (ID: 3)</span></div>
+                  <div class="summary-row"><span>Supplier Branch:</span> <span id="revSupplierName">-</span></div>
+                  <div class="summary-row"><span>Mode:</span> <span id="revModeTag" class="tag">Same DB</span></div>
+                </div>
+                <div class="summary-box">
+                  <h4>PO Details & Commercial Terms</h4>
+                  <div class="summary-row"><span>PO Number:</span> <strong id="revPoNumber">-</strong></div>
+                  <div class="summary-row"><span>Items Count:</span> <span id="revItemCount">0</span></div>
+                  <div class="summary-row"><span>Total Amount:</span> <strong class="highlight-price" id="revTotalAmount">$0.00</strong></div>
+                  <div class="summary-row"><span>Initial Status:</span> <span class="status-badge draft">DRAFT</span></div>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 16px;">
+                <label>Commercial Note for Supplier (will be included in Quotation request)</label>
+                <textarea id="poInitialNote" rows="3" class="form-control" placeholder="e.g. Please confirm delivery timeline and availability for bulk packaging."></textarea>
+              </div>
+
+              <div class="db-mapping-preview">
+                <div class="preview-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  <span>Architecture Mapping Verification (Vanny's Tables)</span>
+                </div>
+                <div class="code-preview" id="dbJsonPreview">
+                  <!-- Live payload JSON preview -->
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn-secondary" id="btnBackStep2">&larr; Back to Items</button>
+                <div class="submit-button-group">
+                  <button type="button" class="btn-secondary" id="btnSaveAsDraft">Save as Draft (PO=DRAFT)</button>
+                  <button type="button" class="btn-primary" id="btnSaveAndSend">Save & Send to Supplier (PO=SENT)</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PO Detail & Status History Workflow Drawer / Modal -->
+    <div class="modal-overlay" id="modalPoDetail">
+      <div class="modal-container xl">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <div class="title-with-badge">
+              <h2 id="detailPoNumber">PO-2026-00125</h2>
+              <span id="detailStatusBadge" class="status-badge negotiating">NEGOTIATING</span>
+              <span class="tx-badge" id="detailTxBadge">Tx: B2B-2026-000001</span>
+            </div>
+            <span class="modal-subtitle" id="detailPartnerSubtitle">Buyer: Downtown Central &bull; Supplier: MegaFood Wholesale Supply</span>
+          </div>
+          <button class="btn-close" id="btnClosePoDetail">&times;</button>
+        </div>
+
+        <!-- Workflow Stepper Indicator -->
+        <div class="workflow-stepper-bar" id="detailStepperBar">
+          <div class="step-node completed" data-status="DRAFT">
+            <div class="node-circle">&check;</div>
+            <div class="node-label">Draft</div>
+          </div>
+          <div class="step-line active"></div>
+          <div class="step-node completed" data-status="SENT">
+            <div class="node-circle">&check;</div>
+            <div class="node-label">Sent to Supplier</div>
+          </div>
+          <div class="step-line active"></div>
+          <div class="step-node current" data-status="NEGOTIATING">
+            <div class="node-circle">3</div>
+            <div class="node-label">Negotiating Offer</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-node" data-status="CONFIRMED">
+            <div class="node-circle">4</div>
+            <div class="node-label">Confirmed</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-node" data-status="PARTIALLY_RECEIVED">
+            <div class="node-circle">5</div>
+            <div class="node-label">Fulfillment & In-Transit</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-node" data-status="RECEIVED">
+            <div class="node-circle">6</div>
+            <div class="node-label">Goods Received</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-node" data-status="CLOSED">
+            <div class="node-circle">7</div>
+            <div class="node-label">Closed</div>
+          </div>
+        </div>
+
+        <div class="modal-body no-pad">
+          <!-- Detail Tabs Header -->
+          <div class="detail-tabs">
+            <button class="tab-btn active" data-tab="tab-po-items">PO Items & Values</button>
+            <button class="tab-btn" data-tab="tab-quotations">Commercial Quotations (<span id="quotationBadgeCount">Rev 2</span>)</button>
+            <button class="tab-btn" data-tab="tab-history">PO Status History & Audit Log (<span id="historyBadgeCount">4</span>)</button>
+            <button class="tab-btn" data-tab="tab-fulfillment">Shipment & Receiving</button>
+            <button class="tab-btn" data-tab="tab-db-record">Database Record View</button>
+          </div>
+
+          <!-- Tab 1: PO Items -->
+          <div class="tab-pane active" id="tab-po-items">
+            <div class="tab-inner">
+              <div class="detail-meta-cards">
+                <div class="meta-card">
+                  <div class="meta-card-label">PO Date</div>
+                  <div class="meta-card-value" id="detPoDate">2026-09-30 09:30</div>
+                </div>
+                <div class="meta-card">
+                  <div class="meta-card-label">Supplier Branch</div>
+                  <div class="meta-card-value" id="detSupplierName">MegaFood Supply (Branch 8)</div>
+                </div>
+                <div class="meta-card">
+                  <div class="meta-card-label">PO Total</div>
+                  <div class="meta-card-value highlight" id="detPoTotal">$3,150.00</div>
+                </div>
+                <div class="meta-card">
+                  <div class="meta-card-label">Internal Approval</div>
+                  <div class="meta-card-value" id="detIsApprove"><span class="tag success">Approved (1)</span></div>
+                </div>
+              </div>
+
+              <div class="section-title-bar">
+                <h3>Purchase Order Items (<code>inv_purchase_order_item</code>)</h3>
+                <span class="composite-pk-notice">Rule #40.3: Composite PK (po_id, item_id) strictly enforced</span>
+              </div>
+
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Buyer Item ID</th>
+                      <th>Product Name</th>
+                      <th>SKU / Barcode</th>
+                      <th>Requested Qty</th>
+                      <th>Unit</th>
+                      <th>Requested Unit Price</th>
+                      <th>Line Total</th>
+                      <th>Supplier Mapping</th>
+                    </tr>
+                  </thead>
+                  <tbody id="detailItemsTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Quick action bar for PO -->
+              <div class="po-action-ribbon" id="poActionRibbon">
+                <!-- Injected dynamically based on current status -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Quotations & Revisions -->
+          <div class="tab-pane" id="tab-quotations">
+            <div class="tab-inner">
+              <div class="quotation-container">
+                <div class="quotation-history-sidebar">
+                  <h4>Quotation Revisions</h4>
+                  <p class="rule-hint">Revisions are immutable. Never overwritten.</p>
+                  <div class="revision-cards-list" id="revisionList">
+                    <!-- Dynamic Revisions -->
+                  </div>
+                </div>
+                <div class="quotation-main-content" id="revisionActiveContent">
+                  <!-- Active revision comparison -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Status History (Vanny's inv_purchase_order_status_history) -->
+          <div class="tab-pane" id="tab-history">
+            <div class="tab-inner">
+              <div class="history-header">
+                <div>
+                  <h3>Permanent PO Status Transitions</h3>
+                  <p class="section-desc">Audited via <code>inv_purchase_order_status_history</code>. Captures actor type, user ID, previous status, and commercial notes.</p>
+                </div>
+                <button class="btn-secondary" id="btnManualStatusTransition">+ Transition Status (Simulate Event)</button>
+              </div>
+
+              <div class="timeline-container" id="poStatusTimeline">
+                <!-- Dynamic timeline items -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Fulfillment & Receiving -->
+          <div class="tab-pane" id="tab-fulfillment">
+            <div class="tab-inner">
+              <div class="fulfillment-view" id="fulfillmentContainer">
+                <!-- Shipments and receiving details -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Database Records View -->
+          <div class="tab-pane" id="tab-db-record">
+            <div class="tab-inner">
+              <div class="db-inspector-layout">
+                <div class="db-inspector-header">
+                  <h3>Live SQL / JSON Data Inspection for Vanny's Assignment</h3>
+                  <p>Shows actual rows matching the Developer Implementation Document rules.</p>
+                </div>
+                <div class="code-editor-tabs">
+                  <div class="sql-block">
+                    <span class="sql-title">SELECT * FROM b2b_transaction WHERE id = <span class="live-tx-id">1001</span>;</span>
+                    <pre><code id="sqlViewTransaction"></code></pre>
+                  </div>
+                  <div class="sql-block">
+                    <span class="sql-title">SELECT * FROM inv_purchase_order WHERE b2b_transaction_id = <span class="live-tx-id">1001</span>;</span>
+                    <pre><code id="sqlViewPO"></code></pre>
+                  </div>
+                  <div class="sql-block">
+                    <span class="sql-title">SELECT * FROM inv_purchase_order_item WHERE po_id = <span class="live-po-id">5000</span>;</span>
+                    <pre><code id="sqlViewPoItems"></code></pre>
+                  </div>
+                  <div class="sql-block">
+                    <span class="sql-title">SELECT * FROM inv_purchase_order_status_history WHERE po_id = <span class="live-po-id">5000</span>;</span>
+                    <pre><code id="sqlViewPoHistory"></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Status Transition Action Modal -->
+    <div class="modal-overlay" id="modalTransition">
+      <div class="modal-container small">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h3>Trigger PO Status Transition</h3>
+            <span class="modal-subtitle">Writes to <code>inv_purchase_order_status_history</code></span>
+          </div>
+          <button class="btn-close" id="btnCloseTransition">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="transitionForm">
+            <div class="form-group">
+              <label>Current Status</label>
+              <input type="text" id="transOldStatus" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label>New Status <span class="req">*</span></label>
+              <select id="transNewStatus" class="form-control" required>
+                <option value="DRAFT">DRAFT</option>
+                <option value="SENT">SENT (Sent to Supplier)</option>
+                <option value="NEGOTIATING">NEGOTIATING (Offer in review)</option>
+                <option value="CONFIRMED">CONFIRMED (Agreed & Locked)</option>
+                <option value="PARTIALLY_RECEIVED">PARTIALLY_RECEIVED</option>
+                <option value="RECEIVED">RECEIVED (All goods arrived)</option>
+                <option value="CLOSED">CLOSED (Completed)</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Actor Type</label>
+              <select id="transActorType" class="form-control">
+                <option value="BUYER">BUYER (Vanny / Purchasing Staff)</option>
+                <option value="SUPPLIER">SUPPLIER (Partner Sales)</option>
+                <option value="SYSTEM">SYSTEM (Automated Outbox / Event)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Audit Note / Reason</label>
+              <textarea id="transNote" rows="3" class="form-control" placeholder="Provide reason or context for this transition..."></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn-secondary" id="btnCancelTransition">Cancel</button>
+              <button type="submit" class="btn-primary">Apply Status Change</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Database Schema Guide Modal (Vanny's Responsibility Reference) -->
+    <div class="modal-overlay" id="modalDbSchema">
+      <div class="modal-container large">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2>Vanny's Module: Architecture & Tables Reference</h2>
+            <span class="modal-subtitle">Official spec mapping from <code>B2B_Module_Developer_Implementation_v2.md</code></span>
+          </div>
+          <button class="btn-close" id="btnCloseDbSchema">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="spec-banner">
+            <div class="spec-col">
+              <strong>Assigned Developer:</strong> Vanny
+            </div>
+            <div class="spec-col">
+              <strong>Module Responsibility:</strong> Buyer-side workflow & PO Integration
+            </div>
+            <div class="spec-col">
+              <strong>Core Tables:</strong> <code>b2b_transaction</code>, <code>inv_purchase_order</code>, <code>inv_purchase_order_status_history</code>
+            </div>
+          </div>
+
+          <div class="schema-cards-grid">
+            <div class="schema-card">
+              <div class="schema-card-title">1. b2b_transaction (Root Record)</div>
+              <p>Root record for one buyer-supplier transaction. Identifies the two parties and overall process.</p>
+              <table class="mini-schema-table">
+                <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+                <tr><td>id</td><td>BIGINT AUTO_INC</td><td>Local DB ID only</td></tr>
+                <tr><td>uuid</td><td>CHAR(36) UNIQUE</td><td>Global cross-db identity</td></tr>
+                <tr><td>transaction_no</td><td>VARCHAR(50)</td><td>e.g. B2B-2026-000001</td></tr>
+                <tr><td>buyer_branch_uuid</td><td>CHAR(36)</td><td>Buyer stable identity</td></tr>
+                <tr><td>supplier_branch_uuid</td><td>CHAR(36)</td><td>Supplier branch identity</td></tr>
+                <tr><td>supplier_connection_id</td><td>BIGINT</td><td>NULL for same DB; ID for remote</td></tr>
+                <tr><td>status</td><td>VARCHAR(30)</td><td>OPEN, COMPLETED, CANCELLED</td></tr>
+              </table>
+            </div>
+
+            <div class="schema-card">
+              <div class="schema-card-title">2. inv_purchase_order (B2B Extension)</div>
+              <p>Buyer's actual purchase order linked to B2B collaboration.</p>
+              <table class="mini-schema-table">
+                <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+                <tr><td>id</td><td>INT AUTO_INC</td><td>Local buyer PO ID</td></tr>
+                <tr><td>b2b_transaction_id</td><td>BIGINT</td><td>Links PO to B2B transaction (NULL for legacy)</td></tr>
+                <tr><td>branch_id</td><td>INT</td><td>Buyer receiving branch</td></tr>
+                <tr><td>supplier_id</td><td>INT</td><td>Legacy only! Set NULL or ignored for B2B</td></tr>
+                <tr><td>po_number</td><td>VARCHAR(50)</td><td>e.g. PO-2026-00125</td></tr>
+                <tr><td>is_approve</td><td>TINYINT(1)</td><td>Internal PO approval (separate from B2B)</td></tr>
+              </table>
+            </div>
+
+            <div class="schema-card">
+              <div class="schema-card-title">3. inv_purchase_order_item</div>
+              <p>Buyer's ordered lines with strict composite primary key.</p>
+              <table class="mini-schema-table">
+                <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+                <tr><td>(po_id, item_id)</td><td>COMPOSITE PK</td><td>NEVER create fake PO item ID!</td></tr>
+                <tr><td>qty</td><td>DECIMAL(14,4)</td><td>Requested quantity</td></tr>
+                <tr><td>price</td><td>DECIMAL(16,6)</td><td>Requested unit price</td></tr>
+                <tr><td>unit_id</td><td>SMALLINT</td><td>Unit of measure</td></tr>
+              </table>
+            </div>
+
+            <div class="schema-card">
+              <div class="schema-card-title">4. inv_purchase_order_status_history</div>
+              <p>Permanent, immutable audit trail of every status transition.</p>
+              <table class="mini-schema-table">
+                <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+                <tr><td>id</td><td>BIGINT AUTO_INC</td><td>Primary key</td></tr>
+                <tr><td>po_id</td><td>INT</td><td>Linked purchase order</td></tr>
+                <tr><td>old_status</td><td>VARCHAR(30)</td><td>Previous state</td></tr>
+                <tr><td>new_status</td><td>VARCHAR(30)</td><td>DRAFT, SENT, NEGOTIATING, CONFIRMED...</td></tr>
+                <tr><td>actor_type</td><td>VARCHAR(20)</td><td>BUYER, SUPPLIER, SYSTEM</td></tr>
+                <tr><td>note</td><td>TEXT</td><td>Reason or event context</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Drawer -->
+    <div class="notif-dropdown" id="notifDropdown">
+      <div class="notif-header">
+        <h4>B2B Notifications (Buyer)</h4>
+        <span class="mark-all" id="btnMarkAllRead">Mark all read</span>
+      </div>
+      <div class="notif-list" id="notifList">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
